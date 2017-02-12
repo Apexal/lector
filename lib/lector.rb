@@ -4,6 +4,9 @@ require 'yaml'
 require 'mysql2'
 require 'active_record'
 
+require 'bundler/setup'
+Bundler.setup(:default)
+
 require_relative 'lector/version'
 require_relative 'lector/storedata'
 
@@ -16,6 +19,5 @@ module Lector
   CONFIG = Config.new
 
   # Require all modules
-  Dir["#{File.dirname(__FILE__)}/regit/*.rb"].each { |file| require file }
-
+  Dir["#{File.dirname(__FILE__)}/lector/*.rb"].each { |file| require file }
 end

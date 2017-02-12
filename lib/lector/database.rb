@@ -2,10 +2,10 @@ module Lector
   module Database
     ActiveRecord::Base.establish_connection(
       adapter: 'mysql2',
-      host: '',
-      database: '',
-      username: '',
-      password: ''
+      host: Lector::CONFIG.db_host,
+      database: Lector::CONFIG.db_database,
+      username: Lector::CONFIG.db_username,
+      password: Lector::CONFIG.db_password
     )
 
     class Student < ActiveRecord::Base
