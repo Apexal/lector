@@ -21,5 +21,18 @@ module Lector
       has_and_belongs_to_many :courses
     end
 
+    def self.save_course(info)
+      info.delete(type)
+
+      course = Course.find(info[:id])
+      
+      if course.nil?  
+        course = Course.create(info)
+      else
+        course.update(info)
+      end
+
+      course
+    end
   end
 end

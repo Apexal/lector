@@ -29,10 +29,9 @@ module Lector
     for i in start_id..end_id
       gets
       begin
-        puts Scraper.extract_person(i)
-      rescue => e 
+        puts Scraper.extract_course(i)
+      rescue => e
         puts "#{i}: Error: #{e}"
-        #puts e.backtrace
         next
       end
       

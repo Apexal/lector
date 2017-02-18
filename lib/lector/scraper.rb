@@ -86,6 +86,7 @@ module Lector
       title = (parts.length == 1 ? parts[0]  : parts[1]).strip
 
       returning = {
+        type: course,
         id: id,
         title: title,
         is_class: is_class
