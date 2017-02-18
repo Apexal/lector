@@ -22,7 +22,7 @@ module Lector
 
       # Discard unneccessary pages
       raise InvalidPageError, "Invalid page: '#{page.title}'" if IGNORE_TITLES.any? { |w| page.title.downcase.include?(w.downcase) }
-      raise InvalidPageError, "Name is too short: '#{page.title.split(':')[0]}'" if page.title.split(':')[0].split(' ').length < 2
+      raise InvalidPageError, "Name is too short: '#{page.title}'" if page.title.split(':').length < 2
 
       page
     end
@@ -33,9 +33,7 @@ module Lector
       name = title.split(':')[0].split(' ')
       first_name = name[0]
       last_name = name[1..-1].join(' ')
-
-      puts name
-
+      
       picture_url = nil
       begin
         picture_url = page.search("a/img[@alt=\"Picture of #{first_name} #{last_name}\"]")[0]['src']
@@ -67,15 +65,33 @@ module Lector
       if type == :student
         returning[:graduation_year] = info['graduation_year']
         returning[:address] = info['resident_address'].sub('<br />', ' ')
-      else
-
       end
 
       returning
     end
 
     def self.extract_course(id, page)
+      parts = page.title.split(':')
+      is_class = parts.length > 2 # Classes have a teacher, title would have ': Teacher Name'
 
+      # Course: Theater Production: Grunner
+      title = (parts.length == 1 ? parts[0]  : parts[1]).strip
+
+      returning = {
+        id: id,
+        title: title,
+        is_class: is_class
+      }
+
+      if is_class
+         # Find teacher
+        teacher_page = @agent.get("http://moodle.regis.org/user/index.php?roleid=3&sifirst=&silast=&id=#{id.to_s}")
+        returning[:teacher_id] = teacher_page.search("//strong/a[contains(@href, 'moodle.regis.org')]")[0]['href'].split("?id=")[1].split("&course=")[0].to_i
+      end
+
+      puts "#{id}: Course #{parts[1..-1].join(' ')}#{" (class)" if is_class}"
+
+      returning
     end
 
   

@@ -27,8 +27,8 @@ module Lector
     puts "Successfully logged into Moodle as #{CONFIG.regis_username}..."
 
     # Test
-    page = Scraper.get_profile(1199, :person)
-    puts Scraper.extract_person(1199, page)
+    page = Scraper.get_profile(187, :course)
+    puts Scraper.extract_course(187, page)
 
   rescue => e
     puts "There was an error: #{e}\nQuitting..."
