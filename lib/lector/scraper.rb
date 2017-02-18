@@ -1,6 +1,7 @@
 module Lector
   module Scraper
     @agent = Mechanize.new
+    @agent.user_agent_alias = 'Linux Firefox'
 
     SUCCESSFUL_LOGIN_PAGE_TITLE = 'Dashboard'
     IGNORE_TITLES = %w(Notice Error Test Parent Nurse Student)
@@ -33,7 +34,7 @@ module Lector
       name = title.split(':')[0].split(' ')
       first_name = name[0]
       last_name = name[1..-1].join(' ')
-      
+
       picture_url = nil
       begin
         picture_url = page.search("a/img[@alt=\"Picture of #{first_name} #{last_name}\"]")[0]['src']
