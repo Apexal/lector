@@ -22,10 +22,27 @@ module Lector
   # Require all modules
   Dir["#{File.dirname(__FILE__)}/lector/*.rb"].each { |file| require file }
 
+  def self.scrape
+    start_id = 1
+    end_id = 100
+
+    for i in start_id..end_id
+      gets
+      begin
+        puts Scraper.extract_person(i)
+      rescue => e 
+        puts "#{i}: Error: #{e}"
+        #puts e.backtrace
+        next
+      end
+      
+    end
+  end
+
   begin
     Scraper.login
     puts "Successfully logged into Moodle as #{CONFIG.regis_username}..."
-
+    scrape
   rescue => e
     puts "There was an error: #{e}\nQuitting..."
     puts e.backtrace

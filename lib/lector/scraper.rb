@@ -22,13 +22,15 @@ module Lector
       page = @agent.get(base_url + id.to_s)
 
       # Discard unneccessary pages
-      raise InvalidPageError, "Invalid page: '#{page.title}'" if IGNORE_TITLES.any? { |w| page.title.downcase.include?(w.downcase) }
+      raise InvalidPageError, "Invalid page: '#{page.title}'" if page.title.nil? || IGNORE_TITLES.any? { |w| page.title.downcase.include?(w.downcase) }
       raise InvalidPageError, "Name is too short: '#{page.title}'" if page.title.split(':').length < 2
 
       page
     end
 
-    def self.extract_person(id, page)
+    def self.extract_person(id)
+      page = get_profile(id, :person)
+      
       title = page.title
 
       name = title.split(':')[0].split(' ')
@@ -50,10 +52,6 @@ module Lector
 
       username_guess = (type == :staff ? "#{first_name[0]}#{last_name}" : "#{first_name[0]}#{last_name}#{Lector::ADVISEMENT_TO_GRAD_YEAR[department[0]]}").downcase.gsub("'", '').gsub('-', '').gsub(' ', '')
 
-      # FIND INFO FROM VERACROSS
-      info = Veracross::find_by_username_or_email(username_guess)
-      puts "#{id}: #{type.capitalize} #{last_name}, #{first_name} of #{department}"
-
       returning =  {
         type: type,
         first_name: first_name,
@@ -65,14 +63,22 @@ module Lector
       }
 
       if type == :student
+        # FIND INFO FROM VERACROSS
+        info = Veracross::find_by_username_or_email(username_guess)
+        raise InvalidPageError, 'Student doesn\'t exist. Failed to link to Veracross data.' if info.nil?
+
         returning[:graduation_year] = info['graduation_year']
         returning[:address] = info['resident_address'].sub('<br />', ' ')
       end
 
+      puts "#{id}: #{type.capitalize} #{last_name}, #{first_name} of #{department} (#{username_guess})"
+
       returning
     end
 
-    def self.extract_course(id, page)
+    def self.extract_course(id)
+      page = get_profile(id, :course)
+
       parts = page.title.split(':')
       is_class = parts.length > 2 # Classes have a teacher, title would have ': Teacher Name'
 
