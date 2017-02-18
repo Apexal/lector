@@ -59,6 +59,7 @@ module Lector
         first_name: first_name,
         last_name: last_name,
         department: department,
+        pictureurl: picture_url,
         username: username_guess,
         course_ids: page.search("//dd/ul/li/a[contains(@href, 'http://moodle.regis.org/course/view.php?id=')]").map { |link| link["href"].split("id=")[1].split("&")[0] }
       }
@@ -94,7 +95,5 @@ module Lector
 
       returning
     end
-
-  
   end
 end
