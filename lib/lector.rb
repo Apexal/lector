@@ -3,12 +3,13 @@ require 'rubygems'
 require 'yaml'
 require 'mysql2'
 require 'active_record'
+require 'mechanize'
 
 require 'bundler/setup'
 Bundler.setup(:default)
 
 require_relative 'lector/version'
-require_relative 'lector/storedata'
+require_relative 'lector/other/storedata'
 
 module Lector
   # Constants
@@ -20,4 +21,17 @@ module Lector
 
   # Require all modules
   Dir["#{File.dirname(__FILE__)}/lector/*.rb"].each { |file| require file }
+
+  begin
+    Scraper.login
+    puts "Successfully logged into Moodle as #{CONFIG.regis_username}..."
+
+    # Test
+    page = Scraper.get_profile(1199, :person)
+    puts Scraper.extract_person(1199, page)
+
+  rescue => e
+    puts "There was an error: #{e}\nQuitting..."
+    puts e.backtrace
+  end
 end

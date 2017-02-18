@@ -6,7 +6,10 @@ module Lector
       db_host: 'localhost',
       db_database: 'lector',
       db_username: 'root',
-      db_password: ''
+      db_password: '',
+      regis_username: '',
+      regis_password: '',
+      veracross_path: '/data/veracross.json'
     }
 
     def initialize
