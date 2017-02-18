@@ -14,7 +14,7 @@ module Lector
   # Constants
   GRADES = %w(Freshmen Sophomores Juniors Seniors).freeze
   SINGULAR_GRADES = %w(Freshman Sophomore Junior Senior).freeze
-
+  ADVISEMENT_TO_GRAD_YEAR = {'1' => 20, '2' => 19, '3' => 18, '4' => 17}
   require_relative 'lector/config'
   CONFIG = Config.new
 
