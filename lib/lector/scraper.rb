@@ -56,6 +56,7 @@ module Lector
         type: type,
         first_name: first_name,
         last_name: last_name,
+        email: username_guess + '@regis.org',
         department: department,
         pictureurl: picture_url,
         username: username_guess,
