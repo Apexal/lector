@@ -34,5 +34,24 @@ module Lector
 
       course
     end
+
+    def self.save_student(info)
+      info.delete(type)
+
+      student = Student.find(info[:id])
+
+      course_ids = info[:course_ids]
+      info.delete(course_ids)
+
+      if student.nil?
+        student = Student.create(info)
+        student.courses = course_ids
+      else
+        student.update(info)
+        student.courses = course_ids
+      end
+
+      student.save!
+    end
   end
 end
