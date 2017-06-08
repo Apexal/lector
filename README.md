@@ -7,7 +7,7 @@
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'lector'
+gem 'regis-lector'
 ```
 
 And then execute:
