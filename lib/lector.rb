@@ -23,7 +23,7 @@ class Lector
     veracross_path: "#{Dir.pwd}/data/veracross.json"
   }
 
-  VERSION = "0.2.2"
+  VERSION = "0.9.0"
 
   include Database
   include Veracross

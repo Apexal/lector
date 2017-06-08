@@ -9,7 +9,7 @@ module Scraper
   GRADES = %w(Freshmen Sophomores Juniors Seniors).freeze
   SINGULAR_GRADES = %w(Freshman Sophomore Junior Senior).freeze
   ADVISEMENT_TO_GRAD_YEAR = {'1' => 20, '2' => 19, '3' => 18, '4' => 17}
-
+  COURSE_TITLE_IGNORES = %w(Department REACH Advisement Office NYSAIS)
   SUCCESSFUL_LOGIN_PAGE_TITLE = 'Dashboard'
   IGNORE_TITLES = %w(Notice Error Test Parent Nurse Student)
 
@@ -101,6 +101,8 @@ module Scraper
 
     # Course: Theater Production: Grunner
     title = (parts.length == 1 ? parts[0]  : parts[1]).strip
+
+    raise "#{id}: Ignoring 'course' #{title}" if COURSE_TITLE_IGNORES.any? { |ignore| title.end_with?(ignore) || title.start_with?(ignore) }
 
     returning = {
       type: :course,

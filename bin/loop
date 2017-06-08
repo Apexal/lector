@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "lector"
+require "yaml"
+require "pp"
+
+PATH = "/home/frank/Projects/lector/data/config.yaml"
+CONFIG = YAML.load_file(PATH)
+
+LECTOR = Lector.new(CONFIG)
+
+# LOOP THROUGH COURSES
+puts "LOOPING THROUGH COURSES"
+800.times do |id|
+  LECTOR.scrape_and_save(id + 1, :course)
+end
+
+# LOOP THROUGH PEOPLE
+puts "LOOPING THROUGH PEOPLE"
+3000.times do |id|
+  LECTOR.scrape_and_save(id + 1, :person)
+end

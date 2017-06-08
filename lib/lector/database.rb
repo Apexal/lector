@@ -59,11 +59,11 @@ module Database
 
     if staff.nil?
       staff = Staff.create(info)
-      staff.course_ids = course_ids
     else
       staff.update(info)
-      staff.course_ids = course_ids # Throws error if courses don't exist
     end
+
+    staff.courses = Course.where(id: course_ids)  # Throws error if courses don't exist
 
     staff.save!
     staff
@@ -76,14 +76,14 @@ module Database
     student = Student.find(info[:id]) rescue nil
 
     course_ids = info.delete(:course_ids)
-    
+
     if student.nil?
       student = Student.create(info)
-      student.course_ids = course_ids
     else
       student.update(info)
-      student.course_ids = course_ids # Throws error if courses don't exist
     end
+
+    student.courses = Course.where(id: course_ids) # Throws error if courses don't exist
 
     student.save!
     student
