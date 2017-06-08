@@ -13,8 +13,6 @@ Bundler.setup(:default)
 Dir["#{File.dirname(__FILE__)}/lector/*.rb"].each { |file| require file }
 
 class Lector
-  attr_accessor :logged_in
-
   @@defaults = {
     db_host: 'localhost',
     db_database: 'lector',
@@ -41,7 +39,7 @@ class Lector
     load_veracross
 
     # First try to login to Moodle
-    @logged_in = login_to_moodle
+    login_to_moodle
 
     # Connect to DB
     connect_db
@@ -54,7 +52,7 @@ class Lector
     begin
       return case type
         when :person
-          extract_person(id)
+          save_person(extract_person(id))
         when :course
           save_course(extract_course(id))
       end

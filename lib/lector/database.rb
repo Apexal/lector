@@ -23,6 +23,16 @@ module Database
     has_and_belongs_to_many :courses
   end
 
+  # Determine staff or student
+  def save_person(info)
+    return case info[:type]
+      when :student
+        save_student(info)
+      else
+        save_staff(info)
+      end
+  end
+
   def save_course(info)
     info.delete(:type)
 
@@ -39,15 +49,34 @@ module Database
     course
   end
 
+  def save_staff(info)
+    info.delete(:type)
+
+    # DB throws error if doesn't exist so resort to nil if throws
+    staff = Staff.find(info[:id]) rescue nil
+
+    course_ids = info.delete(:course_ids)
+
+    if staff.nil?
+      staff = Staff.create(info)
+      staff.course_ids = course_ids
+    else
+      staff.update(info)
+      staff.course_ids = course_ids # Throws error if courses don't exist
+    end
+
+    staff.save!
+    staff
+  end
+
   def save_student(info)
     info.delete(:type)
 
     # DB throws error if doesn't exist so resort to nil if throws
     student = Student.find(info[:id]) rescue nil
 
-    course_ids = info[:course_ids]
-    info.delete(:course_ids)
-
+    course_ids = info.delete(:course_ids)
+    
     if student.nil?
       student = Student.create(info)
       student.course_ids = course_ids
