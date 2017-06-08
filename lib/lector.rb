@@ -42,10 +42,24 @@ class Lector
 
     # First try to login to Moodle
     @logged_in = login_to_moodle
-    
+
     # Connect to DB
     connect_db
 
     nil
+  end
+
+  def scrape_and_save(id, type)
+    puts "Scraping and saving #{type.to_s} with Moodle ID #{id}"
+    begin
+      return case type
+        when :person
+          extract_person(id)
+        when :course
+          save_course(extract_course(id))
+      end
+    rescue => e
+      puts "Failed to scrape and save #{type.to_s} with ID: #{id}\n#{e}"
+    end
   end
 end

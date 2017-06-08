@@ -36,6 +36,7 @@ module Database
     end
 
     course.save!
+    course
   end
 
   def save_student(info)
@@ -56,5 +57,6 @@ module Database
     end
 
     student.save!
+    student
   end
 end
