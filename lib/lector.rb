@@ -1,5 +1,6 @@
 require 'rubygems'
 
+require 'date'
 require 'yaml'
 require 'mysql2'
 require 'active_record'
@@ -8,42 +9,43 @@ require 'mechanize'
 require 'bundler/setup'
 Bundler.setup(:default)
 
-require_relative 'lector/version'
-require_relative 'lector/other/storedata'
+# Require all modules
+Dir["#{File.dirname(__FILE__)}/lector/*.rb"].each { |file| require file }
 
-module Lector
-  # Constants
-  GRADES = %w(Freshmen Sophomores Juniors Seniors).freeze
-  SINGULAR_GRADES = %w(Freshman Sophomore Junior Senior).freeze
-  ADVISEMENT_TO_GRAD_YEAR = {'1' => 20, '2' => 19, '3' => 18, '4' => 17}
-  require_relative 'lector/config'
-  CONFIG = Config.new
+class Lector
+  attr_accessor :logged_in
 
-  # Require all modules
-  Dir["#{File.dirname(__FILE__)}/lector/*.rb"].each { |file| require file }
+  @@defaults = {
+    db_host: 'localhost',
+    db_database: 'lector',
+    db_username: 'root',
+    db_password: '',
+    regis_username: '',
+    regis_password: '',
+    veracross_path: "#{Dir.pwd}/data/veracross.json"
+  }
 
-  def self.scrape
-    start_id = 1
-    end_id = 100
+  VERSION = "0.2.2"
 
-    for i in start_id..end_id
-      gets
-      begin
-        puts Scraper.extract_course(i)
-      rescue => e
-        puts "#{i}: Error: #{e}"
-        next
-      end
-      
-    end
-  end
+  include Database
+  include Veracross
+  include Scraper
 
-  begin
-    Scraper.login
-    puts "Successfully logged into Moodle as #{CONFIG.regis_username}..."
-    scrape
-  rescue => e
-    puts "There was an error: #{e}\nQuitting..."
-    puts e.backtrace
+  attr_reader :logged_in
+
+  def initialize(config)
+    puts "Lector v#{VERSION}"
+
+    # Fill in any blanks
+    @config = @@defaults.merge(config)
+    load_veracross
+
+    # First try to login to Moodle
+    @logged_in = login_to_moodle
+    
+    # Connect to DB
+    connect_db
+
+    nil
   end
 end

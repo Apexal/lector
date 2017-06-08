@@ -1,4 +1,4 @@
-module Lector
+module Exceptions
   class InvalidCredentialsError < StandardError  
   end
 
